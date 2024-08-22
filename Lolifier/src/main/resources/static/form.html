@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Input Form</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('styles/1.jpg');
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            color: #ff6600;
+            transition: background-image 1s ease-in-out;
+        }
+
+        @keyframes neonText {
+            0% { color: #ff6600; }
+            50% { color: #ff00ff; }
+            100% { color: #ff6600; }
+        }
+
+        #form-container, #result-container, #error-container {
+            background-color: rgba(50, 50, 50, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            font-style: italic;
+        }
+
+        #form-container input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: rgba(200, 200, 200, 0.5);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            color: #ff6600;
+            font-size: 16px;
+            box-sizing: border-box;
+            font-style: italic;
+        }
+
+        #form-container input[type="text"]::placeholder {
+            color: #ff6600;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        #form-container button, #result-container button, #error-container button {
+            padding: 10px 20px;
+            background-color: rgba(138, 43, 226, 0.7);
+            border: none;
+            border-radius: 5px;
+            color: #ff6600;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(138, 43, 226, 0.9);
+            font-style: italic;
+            animation: neonText 1.5s infinite;
+        }
+
+        #form-container button:hover, #result-container button:hover, #error-container button:hover {
+            background-color: rgba(138, 43, 226, 0.9);
+        }
+
+        #result-container, #error-container {
+            display: none;
+        }
+
+        #error-message {
+            font-size: 20px;
+            animation: neonText 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+
+<div id="form-container">
+    <h1>ЖМИ МЕРЗАВЕЦ</h1>
+    <form id="textForm">
+        <label for="input">Твой Высер:</label>
+        <input type="text" id="input" name="input" placeholder="Насри Сюда..." required>
+        <button type="button" onclick="submitForm()">Ня</button>
+    </form>
+</div>
+
+<div id="result-container">
+    <div id="result"></div>
+    <button type="button" onclick="resetForm()">Давай Еще Мерзавец</button>
+</div>
+
+<div id="error-container">
+    <div id="error-message">Потом подрочишь, вводи...</div>
+    <button type="button" onclick="resetForm()">Попробуй еще раз</button>
+</div>
+
+<script>
+    const images = [
+        'styles/1.jpg',
+        'styles/2.jpg',
+        'styles/3.jpg',
+        'styles/4.jpg',
+        'styles/5.jpg',
+        'styles/6.jpg',
+        'styles/7.jpg',
+        'styles/8.jpg',
+        'styles/9.jpg'
+    ];
+
+    let currentIndex = 0;
+
+    function changeBackgroundImage() {
+        currentIndex = (currentIndex + 1) % images.length;
+        document.body.style.backgroundImage = `url('${images[currentIndex]}')`;
+    }
+
+    function submitForm() {
+        const input = document.getElementById('input').value.trim();
+
+        if (input === "") {
+            document.getElementById('form-container').style.display = 'none';
+            document.getElementById('error-container').style.display = 'block';
+            changeBackgroundImage();
+            return;
+        }
+
+        fetch('/result?input=' + encodeURIComponent(input), {
+            method: 'GET'
+        })
+            .then(response => response.text())
+            .then(result => {
+                document.getElementById('result').innerText = result;
+                document.getElementById('form-container').style.display = 'none';
+                document.getElementById('result-container').style.display = 'block';
+                changeBackgroundImage();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function resetForm() {
+        document.getElementById('form-container').style.display = 'block';
+        document.getElementById('result-container').style.display = 'none';
+        document.getElementById('error-container').style.display = 'none';
+        document.getElementById('input').value = '';
+        changeBackgroundImage();
+    }
+</script>
+
+</body>
+</html>
